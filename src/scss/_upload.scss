@@ -1,0 +1,76 @@
+.upload {
+    display: flex;
+    width: 90%;
+    height: 90%;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #dbdbdb;
+    box-shadow: 0 0px 10px #dbdbdb;
+    &__dropzone {
+        display: flex;
+        width: 90%;
+        height: 55%;
+        justify-content: center;
+        align-items: center;
+        border: 1px dashed #dbdbdb;
+    }
+    &__dropzone-icon {
+        font-size: 60px;
+    }
+    &__select {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 24px;
+    }
+    &__dropzone.dz-started {
+        .upload__select {
+            display: none;
+        }
+    }
+    .dz-preview {
+        position: relative;
+        display: flex;
+        width: 80%;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .dz-details {
+        max-width: 300px;
+        word-break: break-word;
+    }
+    .dz-progress {
+        width: 100%;
+        height: 30px;
+        flex-grow: 1;
+        flex-shrink: 0;
+        align-self: flex-start;
+    }
+    .dz-complete .dz-progress {
+        display: none;
+    }
+    .dz-upload {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: #55a1e6;
+    }
+    .dz-error-message {
+        display: none;
+        align-self: flex-start;
+    }
+    .dz-complete .dz-error-message {
+        display: block;
+    }
+    .dz-success-mark,
+    .dz-error-mark {
+        display: none;
+    }
+    .dz-remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #55a1e6;
+    }
+}

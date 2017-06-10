@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Panelz Creator Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href="/panelz-creator/demo/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/panelz-creator/dist/css/panelz-creator.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="viewport">
+            <div class="viewport__title-bar">
+                <input type="text" class="viewport__title-input" placeholder="Comic Title" />
+                <button class="button button--submit viewport__title-bar-button">Save</button>
+            </div>
+            <div class="viewport__content">
+                <div class="viewport__workspace-navigation workspace-navigation">
+                    <ul class="workspace-navigation__list">
+                    </ul>
+                    <div class="workspace-navigation__add">
+                        <i class="fa fa-plus workspace-navigation__add-icon"></i>
+                        <span>Add Page</span>
+                    </div>
+                </div>
+                <div class="viewport__workspace workspace">
+                    <div class="upload">
+                        <div class="upload__dropzone">
+                            <div class="upload__select">
+                                <i class="fa fa-cloud-upload upload__dropzone-icon"></i>
+                                <span>Drag and Drop to Upload</span>
+                                <span style="font-size: 14px;">or</span>
+                                <button class="button button--upload">Select File From Your Computer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/panelz-creator/demo/js/jquery-3.2.1.min.js"></script>
+    <script src="/panelz-creator/demo/js/fabric.min.js"></script>
+    <script src="/panelz-creator/demo/js/dropzone.js"></script>
+    <script src="/panelz-creator/dist/js/panelz-creator.js"></script>
+    <script>
+        $(document).ready(function() {
+            var app = new PanelzCreator({});
+        });
+    </script>
+</body>
+</html>
