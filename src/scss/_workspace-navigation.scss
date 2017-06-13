@@ -10,12 +10,16 @@
         align-items: center;
         list-style: none;
         overflow: auto;
+        .ui-state-highlight {
+            width: 100%;
+            border: 1px dashed #dbdbdb;
+            background-color: #f8f8f8;
+        }
     }
     &__list-item {
         width: 100%;
         margin-bottom: 20px;
         flex-shrink: 0;
-        background-color: #f8f8f8;
         img {
             max-width: 100%;
         }

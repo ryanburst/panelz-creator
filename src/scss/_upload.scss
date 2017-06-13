@@ -1,10 +1,14 @@
 .upload {
+    position: absolute;
+    top: 5%;
+    left: 5%;
     display: flex;
     width: 90%;
     height: 90%;
     justify-content: center;
     align-items: center;
     border: 1px solid #dbdbdb;
+    background-color: #fff;
     box-shadow: 0 0px 10px #dbdbdb;
     &__dropzone {
         display: flex;
@@ -72,5 +76,8 @@
         top: 0;
         right: 0;
         color: #55a1e6;
+    }
+    &--hidden {
+        display: none;
     }
 }

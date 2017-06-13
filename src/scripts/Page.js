@@ -6,4 +6,12 @@ class Page extends EventClass {
         this.width = config.width;
         this.height = config.height;
     }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
 }

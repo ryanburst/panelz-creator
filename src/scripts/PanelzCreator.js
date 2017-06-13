@@ -4,7 +4,7 @@ class PanelzCreator extends EventClass {
         console.log('Init');
         this.book = new Book();
         this.upload = new Upload();
-
+        this.workspace = new Workspace(this.book,this.upload);
         this.setEventListeners();
     }
 
@@ -13,7 +13,6 @@ class PanelzCreator extends EventClass {
     }
 
     onPageUploaded(data) {
-        console.log('On page uploaded');
         this.book.add(data);
     }
 }
