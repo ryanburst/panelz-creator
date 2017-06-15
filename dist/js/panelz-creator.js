@@ -83,25 +83,78 @@ class Book extends EventClass {
     constructor() {
         super();
         this.pages = [];
+        this.currentPage = false;
+
+        this.makeSortable();
+        this.setEventListeners();
+    }
+
+    makeSortable() {
+        $(".workspace-navigation__list").sortable({
+            placeholder: "workspace-navigation__list-item ui-state-highlight",
+            start: function(e, ui){
+                ui.placeholder.height(ui.item.height());
+            },
+            update: this.onPageSort.bind(this)
+        });
+    }
+
+    setEventListeners() {
+        this.on('editingPage',this.setCurrentPage.bind(this));
     }
 
     add(pageConfig) {
-        var page = new Page(pageConfig);
+        var page = new Page(this,pageConfig);
         this.pages.push(page);
 
-        $('.workspace-navigation__list').append('<li class="workspace-navigation__list-item"><img src="'+page.url+'" /></li>');
+        var $element = $('<li class="workspace-navigation__list-item"><img src="'+page.url+'" /></li>').data('page',page);
+
+        $('.workspace-navigation__list').append($element);
+
+        $element.trigger('click');
 
         this.trigger('pageAdded',page);
+    }
+
+    setCurrentPage(page) {
+        this.currentPage = page;
+    }
+
+    onPageSort(ev,ui) {
+        this.pages = $('.workspace-navigation__list-item').map(function(i, el) {
+            return $(el).data('page');
+        }).get();
     }
 }
 
 class Page extends EventClass {
-    constructor(config) {
+    constructor(Book,config) {
         super();
+        this.book = Book;
         this.url = config.url;
         this.size = config.size;
         this.width = config.width;
         this.height = config.height;
+        this.panels = config.panels || [];
+
+        this.setEventListeners();
+    }
+
+    setEventListeners() {
+        this.on('edit',this.onEdit.bind(this));
+        this.on('panelAdded',this.onPanelAdded.bind(this));
+    }
+
+    onEdit(pageObject) {
+        this.$element = pageObject;
+        this.book.trigger('editingPage',this);
+    }
+
+    onPanelAdded(panelObject) {
+        var panel = new Panel(this,{'$element':panelObject});
+        console.log(panel.data(),panel.data(true));
+        this.panels.push(panel);
+        console.log(this.panels);
     }
 
     getWidth() {
@@ -111,6 +164,81 @@ class Page extends EventClass {
     getHeight() {
         return this.height;
     }
+}
+
+class Panel extends EventClass {
+    constructor(Page,config) {
+        super();
+        this.page = Page;
+        this.config = config || {};
+        this.$element = this.config.$element;
+        this.x = this.config.x;
+        this.y = this.config.y;
+        this.width = this.config.width;
+        this.height = this.config.height;
+
+        if( this.$element ) {
+            this.setPropertiesFromCanvas();
+        }
+    }
+
+    setPropertiesFromCanvas() {
+        this.x = Math.round((this.getCurrentLeft() - this.page.$element.left) * this.page.getWidth() / this.page.$element.getWidth());
+        this.y = Math.round((this.getCurrentTop() - this.page.$element.top) * this.page.getHeight() / this.page.$element.getHeight());
+        this.width = Math.round(this.getCurrentWidth() * this.page.getWidth() / this.page.$element.getWidth());
+        this.height = Math.round(this.getCurrentHeight() * this.page.getHeight() / this.page.$element.getHeight());
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+
+    getTop() {
+        return this.y;
+    }
+
+    getLeft() {
+        return this.x;
+    }
+
+    getCurrentWidth() {
+        return this.$element.width * this.$element.scaleX;
+    }
+
+    getCurrentHeight() {
+        return this.$element.height * this.$element.scaleY
+    }
+
+    getCurrentTop() {
+        return this.$element.top;
+    }
+
+    getCurrentLeft() {
+        return this.$element.left;
+    }
+
+    data(current) {
+        if( current ) {
+            return {
+                x: this.getCurrentLeft(),
+                y: this.getCurrentTop(),
+                width: this.getCurrentWidth(),
+                height: this.getCurrentHeight()
+            }
+        }
+
+        return {
+            x: this.getLeft(),
+            y: this.getTop(),
+            width: this.getWidth(),
+            height: this.getHeight()
+        }
+    }
+
 }
 
 class PanelzCreator extends EventClass {
@@ -166,23 +294,17 @@ class Workspace extends EventClass {
             originX: 'left',
             originY: 'top',
             angle: 0,
+            fill: 'rgba(255,0,0,0.5)',
             transparentCorners: false,
             cornerColor: 'rgba(102,153,255,0.5)',
             cornerSize: 12,
             lockRotation: true,
-            hasRotatingPoint: false
+            hasRotatingPoint: false,
+            lockScalingFlip: true
         };
-
-        this.panelText = ['A','B','C','D','E','F','G','H','I','J','K'];
 
         this.canvas = new fabric.Canvas('workspace__canvas');
 
-        $(".workspace-navigation__list").sortable({
-            placeholder: "workspace-navigation__list-item ui-state-highlight",
-            start: function(e, ui){
-                ui.placeholder.height(ui.item.height());
-            }
-        });
         $(".controls__menu").sortable({
             placeholder: "controls__menu-item ui-state-highlight",
             start: function(e, ui){
@@ -195,8 +317,9 @@ class Workspace extends EventClass {
 
     setEventListeners() {
         $('body').on('click','.workspace-navigation__add',this.showUploadScreen.bind(this));
+        $('body').on('click','.workspace-navigation__list-item',this.selectPage.bind(this));
         this.upload.on('pageUploaded',this.hideUploadScreen.bind(this));
-        this.book.on('pageAdded',this.onPageAdded.bind(this));
+        //this.book.on('pageAdded',this.onPageAdded.bind(this));
         $(window).on('resize',this.onResize.bind(this)).trigger('resize');
         this.canvas.observe('mouse:down', this.mousedown.bind(this));
         this.canvas.observe('mouse:move', this.mousemove.bind(this));
@@ -204,6 +327,7 @@ class Workspace extends EventClass {
         this.canvas.observe('object:selected', this.setContextControlPosition.bind(this));
         this.canvas.observe('object:moving', this.setContextControlPosition.bind(this));
         this.canvas.observe('object:scaling', this.setContextControlPosition.bind(this));
+        this.canvas.observe('object:scaling', this.monitorSize.bind(this));
         this.canvas.observe('selection:cleared', this.hideContextControls.bind(this));
         $(".upper-canvas").bind('contextmenu',this.onContextMenuClick.bind(this));
         $('.controls__button').on('click',this.onControlsClick.bind(this));
@@ -221,6 +345,14 @@ class Workspace extends EventClass {
     }
 
     onPageAdded(page) {
+
+    }
+
+    selectPage(e) {
+        var $this = $(e.currentTarget);
+        var index = $this.index();
+        var page = this.book.pages[index];
+
         var canvasWidth = this.canvas.getWidth();
         var canvasHeight = this.canvas.getHeight();
         var width = canvasWidth;
@@ -244,6 +376,8 @@ class Workspace extends EventClass {
         fabric.Image.fromURL(page.url, function(oImg) {
             oImg.set(imageSettings);
             this.canvas.add(oImg);
+
+            page.trigger('edit',oImg);
         }.bind(this));
     }
 
@@ -252,16 +386,22 @@ class Workspace extends EventClass {
             return true;
 
         this.drawStarted = true;
+
         var pointer = this.canvas.getPointer(o.e);
-        this.drawX = pointer.x;
-        this.drawY = pointer.y;
+        var minLeft = this.book.currentPage.$element.left;
+        var maxLeft = this.book.currentPage.$element.left + this.book.currentPage.$element.width;
+        var minTop  = this.book.currentPage.$element.top;
+        var maxTop  = this.book.currentPage.$element.top + this.book.currentPage.$element.height;
+
+        this.drawX = Math.min(Math.max(minLeft,pointer.x),maxLeft);
+        this.drawY = Math.min(Math.max(minTop,pointer.y),maxTop);
+
 
         var rect = new fabric.Rect($.extend({},this.OBJECT_SETTINGS, {
             left: this.drawX,
             top: this.drawY,
-            fill: 'rgba(255,0,0,0.5)',
-            width: pointer.x-this.drawX,
-            height: pointer.y-this.drawY
+            width: 10,
+            height: 10
         }));
         this.canvas.add(rect);
         this.drawStarted = rect;
@@ -273,49 +413,51 @@ class Workspace extends EventClass {
 
         var pointer = this.canvas.getPointer(o.e);
         var rect = this.drawStarted;
+        var minLeft = this.book.currentPage.$element.left;
+        var maxLeft = this.book.currentPage.$element.left + this.book.currentPage.$element.width;
+        var minTop  = this.book.currentPage.$element.top;
+        var maxTop  = this.book.currentPage.$element.top + this.book.currentPage.$element.height;
+        var left = Math.min(Math.max(minLeft,pointer.x),maxLeft);
+        var top = Math.min(Math.max(minTop,pointer.y),maxTop);
 
         if(this.drawX>pointer.x){
-            rect.set({ left: Math.abs(pointer.x) });
+            rect.set({ left: Math.abs(left) });
         }
         if(this.drawY>pointer.y){
-            rect.set({ top: Math.abs(pointer.y) });
+            rect.set({ top: Math.abs(top) });
         }
 
-        rect.set({ width: Math.abs(this.drawX - pointer.x) });
-        rect.set({ height: Math.abs(this.drawY - pointer.y) });
-        rect.setCoords();
+        rect.set({ width: Math.abs(this.drawX - left) });
+        rect.set({ height: Math.abs(this.drawY - top) });
 
+        rect.setCoords();
         this.canvas.renderAll();
     }
 
     mouseup(e) {
         if( this.mode === DRAW_MODE && this.drawStarted) {
-            var text = new fabric.IText(this.panelText.shift(), $.extend({},this.OBJECT_SETTINGS,{
-                fontFamily: 'Courier New',
-                top: this.drawStarted.height / 2 - 12,
-                left: this.drawStarted.width / 2 - 8,
-                fontSize: 24,
-                fill: '#000000'
-            }));
-            var top = this.drawStarted.top;
-            var left = this.drawStarted.left;
-            this.drawStarted.top = 0;
-            this.drawStarted.left = 0;
-            var group = new fabric.Group([this.drawStarted, text]);
-            group.set($.extend({},this.OBJECT_SETTINGS,{
-                top: top,
-                left: left
-            }));
-            this.drawStarted.setCoords();
-            this.canvas.add(group);
-            group.setCoords();
-            this.canvas.renderAll();
-            this.canvas.setActiveObject(group);
+            this.canvas.setActiveObject(this.drawStarted);
+            this.book.currentPage.trigger('panelAdded',this.drawStarted);
             this.drawStarted = false;
             this.drawX = 0;
             this.drawY = 0;
             $('.controls__option--select .controls__button').trigger('click');
         }
+    }
+
+    monitorSize(e) {
+        var rect = this.canvas.getActiveObject();
+        var currentSize = rect.left + (rect.width * rect.scaleX);
+        var maxSize = this.book.currentPage.$element.left + (this.book.currentPage.$element.width * this.book.currentPage.$element.scaleX);
+        var currentLeft = rect.left;
+        var minLeft = this.book.currentPage.$element.left;
+        if( currentSize >= maxSize) {
+            rect.scaleX = (maxSize-rect.left) / rect.width;
+        }
+        if( currentLeft <= minLeft ) {
+            rect.scaleX = minLeft;
+        }
+
     }
 
     switchModes(mode) {
@@ -377,22 +519,17 @@ class Workspace extends EventClass {
 
     deleteObject(e) {
         var panel = this.canvas.getActiveObject();
-        panel.forEachObject(function(obj) {
-            this.canvas.remove(obj);
-        }.bind(this));
-        this.canvas.remove(panel);
-        this.canvas.discardActiveGroup().renderAll()
+        panel.remove();
         $('.controls__option--select .controls__button').trigger('click');
     }
 
     duplicateObject() {
-        var panel = this.canvas.getActiveObject();
+        var panel = this.canvas.getActiveObject().clone();
         this.canvas.deactivateAll().renderAll();
-        console.log(panel);
-        /*panel.set(this.OBJECT_SETTINGS);
+        panel.set(this.OBJECT_SETTINGS);
         panel.set("top", panel.top + 5);
         panel.set("left", panel.left + 5);
-        this.canvas.add(panel);*/
+        this.canvas.add(panel);
         $('.controls__option--select .controls__button').trigger('click');
     }
 
