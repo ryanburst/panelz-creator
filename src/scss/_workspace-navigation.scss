@@ -1,9 +1,20 @@
 .workspace-navigation {
+    position: relative;
     display: flex;
     flex-direction: column;
+    &__title {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background-color: #fff;
+        z-index: 2;
+        border-bottom: 1px solid #dbdbdb;
+    }
     &__list {
+        position: relative;
         display: flex;
-        margin: 0;
+        margin: 60px 0 0 0;
         padding: 20px 20px;
         flex-direction: column;
         flex-grow: 1;
@@ -17,14 +28,26 @@
         }
     }
     &__list-item {
+        position: relative;
         width: 100%;
         margin-bottom: 20px;
         flex-shrink: 0;
         img {
             max-width: 100%;
+            border: 2px solid transparent;
+            transition: border 350ms ease;
         }
         &:last-of-type {
             margin-bottom: 0;
+        }
+        &--active,
+        &:hover {
+            .workspace-navigation__delete-page {
+                display: inline-block;
+            }
+            img {
+                border: 2px solid #346cef;
+            }
         }
     }
     &__add {
@@ -40,5 +63,13 @@
     }
     &__add-icon {
         font-size: 24px;
+    }
+    &__delete-page {
+        position: absolute;
+        right: -0.6em;
+        top: -0.6em;
+        display: none;
+        font-size: 21px;
+        cursor: pointer;
     }
 }

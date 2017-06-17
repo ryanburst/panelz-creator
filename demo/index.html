@@ -10,79 +10,7 @@
     <link href="/panelz-creator/dist/css/panelz-creator.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="viewport">
-            <div class="viewport__title-bar">
-                <input type="text" class="viewport__title-input" placeholder="Comic Title" />
-                <button class="button button--submit viewport__title-bar-button">Save</button>
-            </div>
-            <div class="viewport__content">
-                <div class="viewport__workspace-navigation workspace-navigation">
-                    <ul class="workspace-navigation__list">
-                    </ul>
-                    <div class="workspace-navigation__add">
-                        <i class="fa fa-plus workspace-navigation__add-icon"></i>
-                        <span>Add Page</span>
-                    </div>
-                </div>
-                <div class="viewport__workspace workspace">
-                    <canvas id="workspace__canvas" class="workspace__canvas" width="100" hieght="100"></canvas>
-                    <div class="workspace__controls">
-                        <ul class="controls">
-                            <li class="controls__option controls__option--select">
-                                <button class="controls__button" data-mode="SELECT_MODE">
-                                    <i class="fa fa-hand-pointer-o"></i>
-                                </button>
-                            </li>
-                            <li class="controls__option">
-                                <button class="controls__button controls__button--active" data-mode="DRAW_MODE">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                </button>
-                            </li>
-                            <li class="controls__option controls__option--panels">
-                                <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels">
-                                    <i class="fa fa-picture-o"></i>
-                                </button>
-                                <ul class="controls__menu controls__menu--panels">
-                                    <li class="controls__menu-item">Panel A</li>
-                                    <li class="controls__menu-item">Panel B</li>
-                                    <li class="controls__menu-item">Panel C</li>
-                                    <li class="controls__menu-item">Panel D</li>
-                                    <li class="controls__menu-item">Panel E</li>
-                                    <li class="controls__menu-item">Panel F</li>
-                                    <li class="controls__menu-item">Panel G</li>
-                                    <li class="controls__menu-item">Panel H</li>
-                                    <li class="controls__menu-item">Panel I</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <ul class="controls controls--context controls--hidden">
-                        <li class="controls__option">
-                            <button class="controls__button controls__button--duplicate" data-mode="SELECT_MODE">
-                                <i class="fa fa-clone"></i>
-                            </button>
-                        </li>
-                        <li class="controls__option">
-                            <button class="controls__button controls__button--delete" data-mode="SELECT_MODE">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="upload upload--hidden">
-                        <div class="upload__dropzone">
-                            <div class="upload__select">
-                                <i class="fa fa-cloud-upload upload__dropzone-icon"></i>
-                                <span>Drag and Drop to Upload</span>
-                                <span style="font-size: 14px;">or</span>
-                                <button class="button button--upload">Select File From Your Computer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container"></div>
     <script src="/panelz-creator/demo/js/jquery-3.2.1.min.js"></script>
     <script src="/panelz-creator/demo/js/jquery-ui.js"></script>
     <script src="/panelz-creator/demo/js/fabric.min.js"></script>
@@ -90,7 +18,24 @@
     <script src="/panelz-creator/dist/js/panelz-creator.js"></script>
     <script>
         $(document).ready(function() {
-            var app = new PanelzCreator({});
+            var urlParams;
+            (window.onpopstate = function () {
+                var match,
+                    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                    search = /([^&=]+)=?([^&]*)/g,
+                    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+                    query  = window.location.search.substring(1);
+
+                urlParams = {};
+                while (match = search.exec(query))
+                   urlParams[decode(match[1])] = decode(match[2]);
+            })();
+
+            var app = new PanelzCreator({
+                container: '.container',
+                method: urlParams['id'] ? 'id' : 'ui',
+                'id': urlParams['id']
+            });
         });
     </script>
 </body>

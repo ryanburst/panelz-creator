@@ -1,8 +1,9 @@
 class Upload extends EventClass {
-    constructor() {
+    constructor(app) {
         super();
+        this.app = app;
         var myDropzone = new Dropzone(".upload__dropzone", {
-            url: "/upload",
+            url: this.app.getEndpoint('upload'),
             paramName: "page",
             clickable: $('.upload .button--upload')[0],
             addRemoveLinks: true

@@ -10,6 +10,14 @@
     border: 1px solid #dbdbdb;
     background-color: #fff;
     box-shadow: 0 0px 10px #dbdbdb;
+    &__cancel {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: none;
+        color: #55a1e6;
+        text-decoration: none;
+    }
     &__dropzone {
         display: flex;
         width: 90%;

@@ -23,7 +23,7 @@ class EventClass {
         return namespaces;
     }
 
-    trigger(event, data){
+    trigger(event, ...data){
         let channels = this._getChannels(event);
 
         for (let channel of channels){
@@ -34,7 +34,7 @@ class EventClass {
                 }
 
                 for(let callback of this[channelsSymbol][namespace]){
-                    callback.call(this, data);
+                    callback.apply(this, data);
                 }
             }
         }

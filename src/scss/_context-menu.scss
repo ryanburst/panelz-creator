@@ -1,0 +1,23 @@
+.context-menu {
+    position: absolute;
+    width: 200px;
+    top: 0;
+    left: 35px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #dbdbdb;
+    background-color: #f8f8f8;
+    &__item {
+        padding: 5px 10px;
+        border-bottom: 1px solid #dbdbdb;
+        cursor: pointer;
+        &:hover {
+            color: #f8f8f8;
+            background-color: #346cef;
+        }
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+}
