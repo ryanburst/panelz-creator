@@ -16,7 +16,7 @@ const PANELZ_CREATOR_MARKUP = `
         </form>
         <form class="viewport__title-bar viewport__title-bar--hidden">
             <input type="text" class="viewport__title-input" placeholder="Comic Title" />
-            <button class="button button--submit viewport__title-bar-button" type="submit">
+            <button class="button button--submit button--save viewport__title-bar-button" type="submit">
                 <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>
                 <span class="button__text">Save Comic</span>
             </button>

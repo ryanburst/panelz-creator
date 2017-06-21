@@ -89,7 +89,7 @@ class PanelzCreator extends EventClass {
     setEventListeners() {
         $('body').on('click','.button--submit',this.onSubmitButtonClick.bind(this));
         $('body').on('complete','.button--submit',this.onSubmitButtonComplete.bind(this));
-        $('body').on('click','.button--submit',this.saveComic.bind(this));
+        $('body').on('click','.button--save',this.saveComic.bind(this));
     }
 
     createComic(e) {
