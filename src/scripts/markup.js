@@ -20,6 +20,7 @@ const PANELZ_CREATOR_MARKUP = `
                 <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>
                 <span class="button__text">Save Comic</span>
             </button>
+            <a href="#" class="button button--alt viewport__title-bar-button" data-view-link>View Comic</a>
         </form>
         <div class="viewport__content viewport__content--hidden">
             <div class="viewport__workspace-navigation workspace-navigation">

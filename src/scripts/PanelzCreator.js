@@ -7,6 +7,7 @@ class PanelzCreator extends EventClass {
             method: 'ui',
             comic: {},
             endpoints: {
+                view: '/read/',
                 get: '/comic/',
                 create: '/create',
                 save: '/save',
@@ -62,6 +63,8 @@ class PanelzCreator extends EventClass {
         this.upload = new Upload(this);
         this.workspace = new Workspace(this,this.book,this.upload);
         this.upload.on('pageUploaded',this.onPageUploaded.bind(this));
+
+        $('[data-view-link]').attr('href',this.getEndpoint('view') + "?id=" + this.book.id);
     }
 
     loadByUI() {
@@ -86,7 +89,7 @@ class PanelzCreator extends EventClass {
     setEventListeners() {
         $('body').on('click','.button--submit',this.onSubmitButtonClick.bind(this));
         $('body').on('complete','.button--submit',this.onSubmitButtonComplete.bind(this));
-        $('body').on('click','.viewport__title-bar-button',this.saveComic.bind(this));
+        $('body').on('click','.button--submit',this.saveComic.bind(this));
     }
 
     createComic(e) {

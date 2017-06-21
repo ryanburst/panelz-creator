@@ -6,7 +6,11 @@ class Upload extends EventClass {
             url: this.app.getEndpoint('upload'),
             paramName: "page",
             clickable: $('.upload .button--upload')[0],
-            addRemoveLinks: true
+            addRemoveLinks: true,
+            headers: {
+              "Cache-Control": "",
+              "X-Requested-With": ""
+            }
         });
         myDropzone.on("success", function(file,server) {
             myDropzone.removeFile(file);

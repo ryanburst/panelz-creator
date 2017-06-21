@@ -32,6 +32,11 @@ p {
   color: #f8f8f8;
   border: 1px solid #dbdbdb;
   background-color: #346cef;
+  text-decoration: none;
+}
+
+.buttona {
+  line-height: 2;
 }
 
 .button__icon {
@@ -39,6 +44,11 @@ p {
   font-size: 7px;
   vertical-align: middle;
   line-height: 1;
+}
+
+.button--alt {
+  background-color: #52965e;
+  line-height: 2;
 }
 
 .viewport {
