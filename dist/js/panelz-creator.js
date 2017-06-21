@@ -685,6 +685,7 @@ var PanelzCreator = function (_EventClass4) {
             $('.viewport__entry').addClass('viewport__entry--hidden');
             $('.viewport__title-bar').removeClass('viewport__title-bar--hidden');
             $('.viewport__content').removeClass('viewport__content--hidden');
+            $(window).on('beforeunload', this.saveComic.bind(this));
         }
     }, {
         key: 'setEventListeners',
@@ -727,6 +728,7 @@ var PanelzCreator = function (_EventClass4) {
             $.ajax({
                 url: this.getEndpoint('save'),
                 method: 'PUT',
+                async: e.type === "beforeunload" ? false : true,
                 data: this.book.toArray(),
                 error: this.onRequestError.bind(this),
                 success: this.onSaveComicSuccess.bind(this),
@@ -772,6 +774,9 @@ var PanelzCreator = function (_EventClass4) {
         value: function onPageUploaded(data) {
             this.book.add(data);
         }
+    }, {
+        key: 'onBeforeUnload',
+        value: function onBeforeUnload() {}
     }, {
         key: 'getEndpoint',
         value: function getEndpoint(endpoint) {

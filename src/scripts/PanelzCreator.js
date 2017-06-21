@@ -84,6 +84,7 @@ class PanelzCreator extends EventClass {
         $('.viewport__entry').addClass('viewport__entry--hidden');
         $('.viewport__title-bar').removeClass('viewport__title-bar--hidden');
         $('.viewport__content').removeClass('viewport__content--hidden');
+        $(window).on('beforeunload',this.saveComic.bind(this));
     }
 
     setEventListeners() {
@@ -122,6 +123,7 @@ class PanelzCreator extends EventClass {
         $.ajax({
             url: this.getEndpoint('save'),
             method: 'PUT',
+            async: e.type === "beforeunload" ? false : true,
             data: this.book.toArray(),
             error: this.onRequestError.bind(this),
             success: this.onSaveComicSuccess.bind(this),
@@ -161,6 +163,10 @@ class PanelzCreator extends EventClass {
 
     onPageUploaded(data) {
         this.book.add(data);
+    }
+
+    onBeforeUnload() {
+
     }
 
     getEndpoint(endpoint) {
