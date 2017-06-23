@@ -8,7 +8,7 @@ class Panel extends EventClass {
         this.y = this.config.y;
         this.width = this.config.width;
         this.height = this.config.height;
-        this.label = this.page.getNextLabel();
+        this.label = this.config.label || 'Panel ' + this.page.getNextLabel();
     }
 
     set $element(value) {
@@ -151,7 +151,8 @@ class Panel extends EventClass {
             x: this.getLeft(),
             y: this.getTop(),
             width: this.getWidth(),
-            height: this.getHeight()
+            height: this.getHeight(),
+            label: this.label
         }
     }
 

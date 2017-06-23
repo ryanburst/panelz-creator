@@ -438,7 +438,7 @@ var Panel = function (_EventClass3) {
         _this3.y = _this3.config.y;
         _this3.width = _this3.config.width;
         _this3.height = _this3.config.height;
-        _this3.label = _this3.page.getNextLabel();
+        _this3.label = _this3.config.label || 'Panel ' + _this3.page.getNextLabel();
         return _this3;
     }
 
@@ -589,7 +589,8 @@ var Panel = function (_EventClass3) {
                 x: this.getLeft(),
                 y: this.getTop(),
                 width: this.getWidth(),
-                height: this.getHeight()
+                height: this.getHeight(),
+                label: this.label
             };
         }
     }, {
@@ -838,6 +839,11 @@ var Upload = function (_EventClass5) {
                 "X-Requested-With": ""
             }
         });
+
+        _this5.app.on('cancelUpload', function () {
+            myDropzone.removeAllFiles(true);
+        });
+
         myDropzone.on("success", function (file, server) {
             myDropzone.removeFile(file);
             this.trigger('pageUploaded', server);
@@ -939,6 +945,7 @@ var Workspace = function (_EventClass6) {
     }, {
         key: 'hideUploadScreen',
         value: function hideUploadScreen() {
+            this.app.trigger('cancelUpload');
             $('.upload').addClass('upload--hidden');
         }
     }, {
@@ -965,9 +972,22 @@ var Workspace = function (_EventClass6) {
     }, {
         key: 'onPanelSet',
         value: function onPanelSet(panel) {
-            var $element = $('<li class="controls__menu-item"><span data-panel-num>' + (this.book.currentPage.panels.indexOf(panel) + 1) + '</span>. Panel ' + panel.label + '</li>').data('panel', panel);
+            var $element = $('<li class="controls__menu-item panel-item"><span><span data-panel-num>' + (this.book.currentPage.panels.indexOf(panel) + 1) + '</span>.</span> <span class="panel-item__text">' + panel.label + '</span><input type="text" value="' + panel.label + '" class="panel-item__input" /></li>').data('panel', panel);
+            var $text = $element.find('.panel-item__text');
+            var $input = $element.find('.panel-item__input');
             $('.controls__menu--panels').append($element);
             $('.controls__option--panels .controls__button').prop('disabled', false);
+            $element.on('dblclick', function (e) {
+                $text.hide();
+                $input.val($text.text()).show().focus();
+            });
+            $input.on('keyup', function (e) {
+                if (e.keyCode === 13 && $input.val().length) {
+                    $input.hide();
+                    $text.text($input.val()).show();
+                    panel.label = $text.text();
+                }
+            });
             panel.$element.on('removed', function () {
                 $element.remove();
                 $('.controls__menu-item').each(function (index, element) {
@@ -1183,6 +1203,10 @@ var Workspace = function (_EventClass6) {
     }, {
         key: 'hideContextControls',
         value: function hideContextControls() {
+            if ($('.controls__option--panels > .controls__button--active').length) {
+                $('.controls__option--select .controls__button').trigger('click');
+            }
+
             $('.controls--context').addClass('controls--hidden');
         }
     }, {
@@ -1225,6 +1249,9 @@ var Workspace = function (_EventClass6) {
     }, {
         key: 'onControlButtonBlur',
         value: function onControlButtonBlur(e) {
+            if ($(e.relatedTarget).is('.panel-item__input') || $(e.target).is('.panel-item__input')) {
+                return true;
+            }
             $('.controls__option--select .controls__button').trigger('click');
         }
     }, {
@@ -1242,4 +1269,4 @@ var Workspace = function (_EventClass6) {
     return Workspace;
 }(EventClass);
 
-var PANELZ_CREATOR_MARKUP = '\n    <div class="viewport">\n        <div class="viewport__message"></div>\n        <div class="viewport__loading">\n            <h2>Loading...</h2>\n            <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>\n        </div>\n        <form class="viewport__entry viewport__entry--hidden">\n            <h1>Enter the name of your comic to get started.</h1>\n            <p class="viewport__entry-error"></p>\n            <input type="text" class="viewport__entry-input" name="title" placeholder="Comic Title" />\n            <button class="button button--submit viewport__entry-submit" type="submit">\n                <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>\n                <span class="button__text">Create Your Comic</span>\n            </button>\n        </form>\n        <form class="viewport__title-bar viewport__title-bar--hidden">\n            <input type="text" class="viewport__title-input" placeholder="Comic Title" />\n            <button class="button button--submit button--save viewport__title-bar-button" type="submit">\n                <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>\n                <span class="button__text">Save Comic</span>\n            </button>\n            <a href="#" class="button button--alt viewport__title-bar-button" data-view-link>View Comic</a>\n        </form>\n        <div class="viewport__content viewport__content--hidden">\n            <div class="viewport__workspace-navigation workspace-navigation">\n                <div class="workspace-navigation__title">Pages</div>\n                <ul class="workspace-navigation__list"></ul>\n                <div class="workspace-navigation__add">\n                    <i class="fa fa-plus workspace-navigation__add-icon"></i>\n                    <span>Add Page</span>\n                </div>\n            </div>\n            <div class="viewport__workspace workspace">\n                <canvas id="workspace__canvas" class="workspace__canvas" width="100" hieght="100"></canvas>\n                <div class="workspace__controls">\n                    <ul class="controls controls--edit controls--hidden">\n                        <li class="controls__option controls__option--select controls__button--active">\n                            <button class="controls__button" data-mode="SELECT_MODE">\n                                <i class="fa fa-hand-pointer-o"></i>\n                            </button>\n                        </li>\n                        <li class="controls__option controls__option--draw">\n                            <button class="controls__button" data-mode="DRAW_MODE">\n                                <i class="fa fa-pencil-square-o"></i>\n                            </button>\n                        </li>\n                        <li class="controls__option controls__option--panels">\n                            <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels" disabled>\n                                <i class="fa fa-picture-o"></i>\n                            </button>\n                            <ul class="controls__menu controls__menu--panels">\n                                <li class="controls__menu-item">Panel A</li>\n                                <li class="controls__menu-item">Panel B</li>\n                                <li class="controls__menu-item">Panel C</li>\n                                <li class="controls__menu-item">Panel D</li>\n                                <li class="controls__menu-item">Panel E</li>\n                                <li class="controls__menu-item">Panel F</li>\n                                <li class="controls__menu-item">Panel G</li>\n                                <li class="controls__menu-item">Panel H</li>\n                                <li class="controls__menu-item">Panel I</li>\n                            </ul>\n                        </li>\n                    </ul>\n                </div>\n                <ul class="controls controls--context controls--hidden">\n                    <li class="controls__option">\n                        <button class="controls__button controls__button--duplicate" data-mode="SELECT_MODE">\n                            <i class="fa fa-clone"></i>\n                        </button>\n                    </li>\n                    <li class="controls__option">\n                        <button class="controls__button controls__button--delete" data-mode="SELECT_MODE">\n                            <i class="fa fa-trash"></i>\n                        </button>\n                    </li>\n                </ul>\n                <div class="upload">\n                    <a href="#" class="upload__cancel">Cancel</a>\n                    <div class="upload__dropzone">\n                        <div class="upload__select">\n                            <i class="fa fa-cloud-upload upload__dropzone-icon"></i>\n                            <span>Drag and Drop to Upload</span>\n                            <span style="font-size: 14px;">or</span>\n                            <button class="button button--upload">Select File From Your Computer</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n';
+var PANELZ_CREATOR_MARKUP = '\n    <div class="viewport">\n        <div class="viewport__message"></div>\n        <div class="viewport__loading">\n            <h2>Loading...</h2>\n            <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>\n        </div>\n        <form class="viewport__entry viewport__entry--hidden">\n            <h1>Enter the name of your comic to get started.</h1>\n            <p class="viewport__entry-error"></p>\n            <input type="text" class="viewport__entry-input" name="title" placeholder="Comic Title" />\n            <button class="button button--submit viewport__entry-submit" type="submit">\n                <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>\n                <span class="button__text">Create Your Comic</span>\n            </button>\n        </form>\n        <form class="viewport__title-bar viewport__title-bar--hidden">\n            <input type="text" class="viewport__title-input" placeholder="Comic Title" />\n            <button class="button button--submit button--save viewport__title-bar-button" type="submit">\n                <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>\n                <span class="button__text">Save Comic</span>\n            </button>\n            <a href="#" class="button button--alt viewport__title-bar-button" data-view-link>View Comic</a>\n        </form>\n        <div class="viewport__content viewport__content--hidden">\n            <div class="viewport__workspace-navigation workspace-navigation">\n                <div class="workspace-navigation__title">Pages</div>\n                <ul class="workspace-navigation__list"></ul>\n                <div class="workspace-navigation__add">\n                    <i class="fa fa-plus workspace-navigation__add-icon"></i>\n                    <span>Add Page</span>\n                </div>\n            </div>\n            <div class="viewport__workspace workspace">\n                <canvas id="workspace__canvas" class="workspace__canvas" width="100" hieght="100"></canvas>\n                <div class="workspace__controls">\n                    <ul class="controls controls--edit controls--hidden">\n                        <li class="controls__option controls__option--select controls__button--active">\n                            <button class="controls__button" data-mode="SELECT_MODE" title="Select Panel">\n                                <i class="fa fa-hand-pointer-o"></i>\n                            </button>\n                        </li>\n                        <li class="controls__option controls__option--draw">\n                            <button class="controls__button" data-mode="DRAW_MODE" title="Draw Panel">\n                                <i class="fa fa-pencil-square-o"></i>\n                            </button>\n                        </li>\n                        <li class="controls__option controls__option--panels">\n                            <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels" disabled title="Organize Panels">\n                                <i class="fa fa-picture-o"></i>\n                            </button>\n                            <ul class="controls__menu controls__menu--panels">\n                                <li class="controls__menu-item">Panel A</li>\n                                <li class="controls__menu-item">Panel B</li>\n                                <li class="controls__menu-item">Panel C</li>\n                                <li class="controls__menu-item">Panel D</li>\n                                <li class="controls__menu-item">Panel E</li>\n                                <li class="controls__menu-item">Panel F</li>\n                                <li class="controls__menu-item">Panel G</li>\n                                <li class="controls__menu-item">Panel H</li>\n                                <li class="controls__menu-item">Panel I</li>\n                            </ul>\n                        </li>\n                    </ul>\n                </div>\n                <ul class="controls controls--context controls--hidden">\n                    <li class="controls__option">\n                        <button class="controls__button controls__button--duplicate" data-mode="SELECT_MODE" title="Clone Panel">\n                            <i class="fa fa-clone"></i>\n                        </button>\n                    </li>\n                    <li class="controls__option">\n                        <button class="controls__button controls__button--delete" data-mode="SELECT_MODE" title="Delete Panel">\n                            <i class="fa fa-trash"></i>\n                        </button>\n                    </li>\n                </ul>\n                <div class="upload">\n                    <a href="#" class="upload__cancel">Cancel</a>\n                    <div class="upload__dropzone">\n                        <div class="upload__select">\n                            <i class="fa fa-cloud-upload upload__dropzone-icon"></i>\n                            <span>Drag and Drop to Upload</span>\n                            <span style="font-size: 14px;">or</span>\n                            <button class="button button--upload">Select File From Your Computer</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n';

@@ -77,3 +77,15 @@
         display: none;
     }
 }
+
+.panel-item {
+    display: flex;
+    &__input,
+    &__text {
+        margin-left: 3px;
+    }
+    &__input {
+        display: none;
+        min-width: 0;
+    }
+}

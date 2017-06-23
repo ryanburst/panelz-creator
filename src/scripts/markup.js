@@ -36,17 +36,17 @@ const PANELZ_CREATOR_MARKUP = `
                 <div class="workspace__controls">
                     <ul class="controls controls--edit controls--hidden">
                         <li class="controls__option controls__option--select controls__button--active">
-                            <button class="controls__button" data-mode="SELECT_MODE">
+                            <button class="controls__button" data-mode="SELECT_MODE" title="Select Panel">
                                 <i class="fa fa-hand-pointer-o"></i>
                             </button>
                         </li>
                         <li class="controls__option controls__option--draw">
-                            <button class="controls__button" data-mode="DRAW_MODE">
+                            <button class="controls__button" data-mode="DRAW_MODE" title="Draw Panel">
                                 <i class="fa fa-pencil-square-o"></i>
                             </button>
                         </li>
                         <li class="controls__option controls__option--panels">
-                            <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels" disabled>
+                            <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels" disabled title="Organize Panels">
                                 <i class="fa fa-picture-o"></i>
                             </button>
                             <ul class="controls__menu controls__menu--panels">
@@ -65,12 +65,12 @@ const PANELZ_CREATOR_MARKUP = `
                 </div>
                 <ul class="controls controls--context controls--hidden">
                     <li class="controls__option">
-                        <button class="controls__button controls__button--duplicate" data-mode="SELECT_MODE">
+                        <button class="controls__button controls__button--duplicate" data-mode="SELECT_MODE" title="Clone Panel">
                             <i class="fa fa-clone"></i>
                         </button>
                     </li>
                     <li class="controls__option">
-                        <button class="controls__button controls__button--delete" data-mode="SELECT_MODE">
+                        <button class="controls__button controls__button--delete" data-mode="SELECT_MODE" title="Delete Panel">
                             <i class="fa fa-trash"></i>
                         </button>
                     </li>

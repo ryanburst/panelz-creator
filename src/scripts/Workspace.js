@@ -79,6 +79,7 @@ class Workspace extends EventClass {
     }
 
     hideUploadScreen() {
+        this.app.trigger('cancelUpload');
         $('.upload').addClass('upload--hidden');
     }
 
@@ -103,9 +104,22 @@ class Workspace extends EventClass {
     }
 
     onPanelSet(panel) {
-        var $element = $('<li class="controls__menu-item"><span data-panel-num>'+(this.book.currentPage.panels.indexOf(panel)+1)+'</span>. Panel '+panel.label+'</li>').data('panel',panel);
+        var $element = $('<li class="controls__menu-item panel-item"><span><span data-panel-num>'+(this.book.currentPage.panels.indexOf(panel)+1)+'</span>.</span> <span class="panel-item__text">'+panel.label+'</span><input type="text" value="'+panel.label+'" class="panel-item__input" /></li>').data('panel',panel);
+        var $text = $element.find('.panel-item__text');
+        var $input = $element.find('.panel-item__input');
         $('.controls__menu--panels').append($element);
         $('.controls__option--panels .controls__button').prop('disabled',false);
+        $element.on('dblclick',function(e) {
+            $text.hide();
+            $input.val($text.text()).show().focus();
+        });
+        $input.on('keyup',function(e) {
+            if( e.keyCode === 13 && $input.val().length ) {
+                $input.hide();
+                $text.text($input.val()).show();
+                panel.label = $text.text();
+            }
+        });
         panel.$element.on('removed',function() {
             $element.remove();
             $('.controls__menu-item').each(function(index,element) {
@@ -315,6 +329,10 @@ class Workspace extends EventClass {
     }
 
     hideContextControls() {
+        if( $('.controls__option--panels > .controls__button--active').length ) {
+            $('.controls__option--select .controls__button').trigger('click');
+        }
+
         $('.controls--context').addClass('controls--hidden');
     }
 
@@ -354,6 +372,9 @@ class Workspace extends EventClass {
     }
 
     onControlButtonBlur(e) {
+        if( $(e.relatedTarget).is('.panel-item__input') || $(e.target).is('.panel-item__input') ) {
+            return true;
+        }
         $('.controls__option--select .controls__button').trigger('click');
     }
 

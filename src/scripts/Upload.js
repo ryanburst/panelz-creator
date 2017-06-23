@@ -12,6 +12,11 @@ class Upload extends EventClass {
               "X-Requested-With": ""
             }
         });
+
+        this.app.on('cancelUpload',function() {
+            myDropzone.removeAllFiles(true);
+        });
+
         myDropzone.on("success", function(file,server) {
             myDropzone.removeFile(file);
             this.trigger('pageUploaded',server);
