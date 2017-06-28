@@ -12,7 +12,8 @@ class PanelzCreator extends EventClass {
                 create: '/create',
                 save: '/save',
                 upload: '/upload'
-            }
+            },
+            onCreateComicSuccess: function(){}
         };
 
         this.config = $.extend(true,{},this.DEFAULTS,config);
@@ -102,7 +103,10 @@ class PanelzCreator extends EventClass {
                 title: $('.viewport__entry-input').val()
             },
             error: this.onCreateComicError.bind(this),
-            success: this.loadByData.bind(this),
+            success: function(data) {
+                this.config.onCreateComicSuccess.call(this,data);
+                this.loadByData(data);
+            }.bind(this),
             complete: function() {
                 $(e.currentTarget).trigger('complete',e);
             }

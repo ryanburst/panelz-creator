@@ -18,7 +18,7 @@
     <script src="/panelz-creator/dist/js/panelz-creator.js"></script>
     <script>
         $(document).ready(function() {
-            var urlParams;
+            var urlParams, idChange;
             (window.onpopstate = function () {
                 var match,
                     pl     = /\+/g,  // Regex for replacing addition symbol with a space
@@ -28,7 +28,12 @@
 
                 urlParams = {};
                 while (match = search.exec(query))
-                   urlParams[decode(match[1])] = decode(match[2]);
+                    urlParams[decode(match[1])] = decode(match[2]);
+
+                if(idChange && ! urlParams.id) {
+                    window.location.reload();
+                }
+               console.log(urlParams);
             })();
 
             var app = new PanelzCreator({
@@ -41,6 +46,10 @@
                     create: 'https://panelz.comicbooklabs.com/api/create/',
                     save: 'https://panelz.comicbooklabs.com/api/save/',
                     upload: 'https://panelz.comicbooklabs.com/api/upload/'
+                },
+                onCreateComicSuccess: function(data) {
+                    history.pushState({id:data.id}, data.title + " | Panelz Creator Demo",location.href + '?id=' + data.id );
+                    idChange = true;
                 }
             });
         });

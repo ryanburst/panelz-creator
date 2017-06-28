@@ -627,7 +627,8 @@ var PanelzCreator = function (_EventClass4) {
                 create: '/create',
                 save: '/save',
                 upload: '/upload'
-            }
+            },
+            onCreateComicSuccess: function onCreateComicSuccess() {}
         };
 
         _this4.config = $.extend(true, {}, _this4.DEFAULTS, config);
@@ -706,7 +707,10 @@ var PanelzCreator = function (_EventClass4) {
                     title: $('.viewport__entry-input').val()
                 },
                 error: this.onCreateComicError.bind(this),
-                success: this.loadByData.bind(this),
+                success: function (data) {
+                    this.config.onCreateComicSuccess.call(this, data);
+                    this.loadByData(data);
+                }.bind(this),
                 complete: function complete() {
                     $(e.currentTarget).trigger('complete', e);
                 }
