@@ -848,6 +848,10 @@ var Upload = function (_EventClass5) {
             myDropzone.removeAllFiles(true);
         });
 
+        myDropzone.on("sending", function (file, xhr, formData) {
+            formData.append("comicID", this.app.book.id);
+        });
+
         myDropzone.on("success", function (file, server) {
             myDropzone.removeFile(file);
             this.trigger('pageUploaded', server);
