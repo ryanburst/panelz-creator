@@ -1725,6 +1725,7 @@ var Upload = function (_EventClass5) {
     }, {
         key: 'onCancelUpload',
         value: function onCancelUpload() {
+            console.log(this, this.dropzone);
             this.dropzone.removeAllFiles(true);
         }
 

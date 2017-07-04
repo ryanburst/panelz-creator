@@ -54,6 +54,7 @@ class Upload extends EventClass {
      * the Dropzone instance.
      */
     onCancelUpload() {
+        console.log(this,this.dropzone);
         this.dropzone.removeAllFiles(true);
     }
 
