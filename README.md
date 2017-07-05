@@ -178,3 +178,14 @@
     onCreateComicSuccess: function(){}
 }
 ```
+
+## Update Table
+Below is a table with a list of feedback from previous group discussions and how
+they were addressed in this round of coding.
+
+| Feedback | How it was Addressed |
+| --- | --- |
+| Renaming panels | Renaming panels in the panel menu has been added. Double click to edit and enter to submit changes. |
+| Multiple upload layout broken | Previously multiple uploads showed up side-by-side, they are now stacked and in a scrollable panel for overflow. |
+| Afte creating a comic, editing it, then viewing comic, clicking back didn't take you to edit | The URL now updates with the ID of the comic after creation, so clicking the back button after leaving the page will take you back to editing the comic. |
+| Button icons seemed ambiguous | Added tooltips to display button action |
