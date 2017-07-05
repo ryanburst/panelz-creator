@@ -22,13 +22,23 @@ gulp.task('css', function () {
 
 gulp.task('scripts', function () {
   return gulp.src([
-            './src/scripts/**/*.js',
-            '!./src/scripts/vendor/**'
+            './src/scripts/vendor/EventClass.js',
+            './src/scripts/*.js'
         ])
         .pipe(concat('panelz-creator.js'))
         .pipe(babel({
             presets: ['es2015']
         }))
+        .pipe(gulp.dest('./dist/js'));
+});
+
+gulp.task('scripts-full', function () {
+  return gulp.src([
+            './src/scripts/vendor/fabric.min.js',
+            './src/scripts/vendor/dropzone.js',
+            './dist/js/panelz-creator.js'
+        ])
+        .pipe(concat('panelz-creator-full.js'))
         .pipe(gulp.dest('./dist/js'));
 });
 
@@ -39,10 +49,17 @@ gulp.task('images', function () {
     .pipe(gulp.dest('./dist/images'))
 });
 
+gulp.task('copy', function() {
+    gulp.src([
+        './src/fonts/*'
+    ])
+    .pipe(gulp.dest('./dist/fonts'));
+});
+
 gulp.task('watch', function () {
     gulp.watch('./src/scss/**/*.scss', ['css']);
-    gulp.watch('./src/scripts/**/*.js', ['scripts']);
+    gulp.watch('./src/scripts/**/*.js', ['scripts','scripts-full']);
     gulp.watch('./src/images/**/**', ['images']);
 });
 
-gulp.task('default', ['css','scripts','images']);
+gulp.task('default', ['css','scripts','scripts-full','images','copy']);
