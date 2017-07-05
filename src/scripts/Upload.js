@@ -26,6 +26,7 @@ class Upload extends EventClass {
          * @type {Dropzone}
          */
         this.dropzone = new Dropzone(".upload__dropzone", {
+            acceptedFiles: "image/jpeg,image/png",
             url: this.app.getEndpoint('upload'),
             paramName: "page",
             clickable: $('.upload .button--upload')[0],
@@ -47,15 +48,21 @@ class Upload extends EventClass {
         this.dropzone.on("sending",this.onFileSending.bind(this));
         this.dropzone.on("success",this.onUploadSuccess.bind(this));
         this.dropzone.on('complete',this.onUploadComplete.bind(this));
+        this.dropzone.on('error',this.onUploadError.bind(this));
     }
 
     /**
      * Cancel upload has been initiated, so clear all files from
      * the Dropzone instance.
+     *
+     * @return {Boolean}
      */
     onCancelUpload() {
-        console.log(this,this.dropzone);
+        if( this.areUploadsComplete() ) {
+            return true;
+        }
         this.dropzone.removeAllFiles(true);
+        return this.app.message('Upload canceled');
     }
 
     /**
@@ -116,5 +123,21 @@ class Upload extends EventClass {
     areUploadsComplete() {
         return this.dropzone.getUploadingFiles().length === 0
             && this.dropzone.getQueuedFiles().length === 0;
+    }
+
+    /**
+     * When there is an upload error, message the user (unless
+     * the user canceled the upload);
+     *
+     * @param  {Object} file         Dropzone file
+     * @param  {String} errorMessage Error message from server
+     * @return {Boolean}
+     */
+    onUploadError(file, errorMessage) {
+        if( file.status === 'canceled' ) {
+            return false;
+        }
+        this.app.message('Error uploading ' + file.name);
+        return this.dropzone.removeFile(file);
     }
 }

@@ -1689,6 +1689,7 @@ var Upload = function (_EventClass5) {
          * @type {Dropzone}
          */
         _this5.dropzone = new Dropzone(".upload__dropzone", {
+            acceptedFiles: "image/jpeg,image/png",
             url: _this5.app.getEndpoint('upload'),
             paramName: "page",
             clickable: $('.upload .button--upload')[0],
@@ -1715,18 +1716,24 @@ var Upload = function (_EventClass5) {
             this.dropzone.on("sending", this.onFileSending.bind(this));
             this.dropzone.on("success", this.onUploadSuccess.bind(this));
             this.dropzone.on('complete', this.onUploadComplete.bind(this));
+            this.dropzone.on('error', this.onUploadError.bind(this));
         }
 
         /**
          * Cancel upload has been initiated, so clear all files from
          * the Dropzone instance.
+         *
+         * @return {Boolean}
          */
 
     }, {
         key: 'onCancelUpload',
         value: function onCancelUpload() {
-            console.log(this, this.dropzone);
+            if (this.areUploadsComplete()) {
+                return true;
+            }
             this.dropzone.removeAllFiles(true);
+            return this.app.message('Upload canceled');
         }
 
         /**
@@ -1798,6 +1805,25 @@ var Upload = function (_EventClass5) {
         key: 'areUploadsComplete',
         value: function areUploadsComplete() {
             return this.dropzone.getUploadingFiles().length === 0 && this.dropzone.getQueuedFiles().length === 0;
+        }
+
+        /**
+         * When there is an upload error, message the user (unless
+         * the user canceled the upload);
+         *
+         * @param  {Object} file         Dropzone file
+         * @param  {String} errorMessage Error message from server
+         * @return {Boolean}
+         */
+
+    }, {
+        key: 'onUploadError',
+        value: function onUploadError(file, errorMessage) {
+            if (file.status === 'canceled') {
+                return false;
+            }
+            this.app.message('Error uploading ' + file.name);
+            return this.dropzone.removeFile(file);
         }
     }]);
 
