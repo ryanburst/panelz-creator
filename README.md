@@ -185,6 +185,7 @@ they were addressed in this round of coding.
 
 ### Round Two/Version One Feedback
 [Version One Demo](https://ryanburst.github.io/panelz-creator/demo/v1.0/)
+
 | Feedback | How it was Addressed |
 | --- | --- |
 | Renaming panels may help with identifying which panels are which | Renaming panels in the panel menu has been added. Double click to edit and enter to submit changes. |
