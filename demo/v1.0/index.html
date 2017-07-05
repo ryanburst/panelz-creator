@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Panelz Creator Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href="/panelz-creator/demo/v1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/panelz-creator/demo/v1.0/css/panelz-creator.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container"></div>
+    <script src="/panelz-creator/demo/v1.0/js/jquery-3.2.1.min.js"></script>
+    <script src="/panelz-creator/demo/v1.0/js/jquery-ui.js"></script>
+    <script src="/panelz-creator/demo/v1.0/js/fabric.min.js"></script>
+    <script src="/panelz-creator/demo/v1.0/js/dropzone.js"></script>
+    <script src="/panelz-creator/demo/v1.0/js/panelz-creator.js"></script>
+    <script>
+        $(document).ready(function() {
+            var urlParams;
+            (window.onpopstate = function () {
+                var match,
+                    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                    search = /([^&=]+)=?([^&]*)/g,
+                    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+                    query  = window.location.search.substring(1);
+
+                urlParams = {};
+                while (match = search.exec(query))
+                   urlParams[decode(match[1])] = decode(match[2]);
+            })();
+
+            var app = new PanelzCreator({
+                container: '.container',
+                method: urlParams['id'] ? 'id' : 'ui',
+                id: urlParams['id'],
+                endpoints: {
+                    view: 'http://ryanburst.github.io/panelz/demo/',
+                    get: 'https://panelz.comicbooklabs.com/api/comic/',
+                    create: 'https://panelz.comicbooklabs.com/api/create/',
+                    save: 'https://panelz.comicbooklabs.com/api/save/',
+                    upload: 'https://panelz.comicbooklabs.com/api/upload/'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
