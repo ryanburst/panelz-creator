@@ -191,4 +191,4 @@ they were addressed in this round of coding.
 | Button icons seemed ambiguous | Added tool tips to display button action |
 | Progress bar for upload is great, but with no border it's hard to tell how much is left. | Added border to progress bar
 | Outer cancel button hides the upload screen, but doesn't actually cancel the upload | Clicking cancel upload link closes window *and* cancels upload
-
+| Improvement | Fully commented code
