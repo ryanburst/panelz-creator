@@ -83,7 +83,8 @@ class Workspace extends EventClass {
             cornerColor: 'rgba(102,153,255,0.5)',
             cornerSize: 12,
             lockRotation: true,
-            hasRotatingPoint: false
+            hasRotatingPoint: false,
+            selectable: false
         };
         /**
          * Reference to the working canvas element,
@@ -210,7 +211,7 @@ class Workspace extends EventClass {
      * @param  {Panel} panel Panel instance
      */
     onPanelSet(panel) {
-        var $element = $('<li class="controls__menu-item panel-item"><span><span data-panel-num>'+(this.book.currentPage.panels.indexOf(panel)+1)+'</span>.</span> <span class="panel-item__text">'+panel.label+'</span><input type="text" value="'+panel.label+'" class="panel-item__input" /></li>').data('panel',panel);
+        var $element = $('<li class="controls__menu-item panel-item" title="Double click to rename"><span><span data-panel-num>'+(this.book.currentPage.panels.indexOf(panel)+1)+'</span>.</span> <span class="panel-item__text">'+panel.label+'</span><input type="text" value="'+panel.label+'" class="panel-item__input" /></li>').data('panel',panel);
         var $text = $element.find('.panel-item__text');
         var $input = $element.find('.panel-item__input');
         $('.controls__menu--panels').append($element);
@@ -222,8 +223,8 @@ class Workspace extends EventClass {
             $input.val($text.text()).show().focus();
         });
         // If they hit enter, save the text as the panel label and hide the input/show text
-        $input.on('keyup',function(e) {
-            if( e.keyCode === 13 && $input.val().length ) {
+        $input.on('keyup blur',function(e) {
+            if( (e.keyCode === 13 || e.type === 'blur') && $input.val().length ) {
                 $input.hide();
                 $text.text($input.val()).show();
                 panel.label = $text.text();
@@ -275,6 +276,7 @@ class Workspace extends EventClass {
      * pages, clear the canvas.
      *
      * @param {Object} e Event object
+     * @fires Book#pageDeleted
      */
     onDeletePage(e) {
         var $this = $(e.currentTarget);
@@ -285,6 +287,15 @@ class Workspace extends EventClass {
         e.stopPropagation();
 
         this.book.pages.splice(index,1);
+
+        /**
+         * Page deleted event
+         *
+         * @event Book#pageDeleted
+         * @type {Object}
+         * @property {Page} Page
+         */
+        this.book.trigger('pageDeleted',page);
 
         $element.remove();
 
@@ -419,11 +430,10 @@ class Workspace extends EventClass {
     mouseup(e) {
         if( this.mode === DRAW_MODE && this.drawStarted) {
             this.book.currentPage.trigger('panelObjectAdded',this.drawStarted);
-            this.canvas.setActiveObject(this.drawStarted);
+            this.canvas.deactivateAllWithDispatch().renderAll();
             this.drawStarted = false;
             this.drawX = 0;
             this.drawY = 0;
-            $('.controls__option--select .controls__button').trigger('activate');
         }
     }
 

@@ -190,15 +190,15 @@ they were addressed in this round of coding.
 | Tool tips take a little bit to show up | Nature of tool tips on web, can do custom tooltips, but that will take more effort | Low | 2 hours (Custom tooltip)
 | Labels on panels to help distinguish them better | Add labels | Medium | 6-8 hours
 | Alt to previous: tooltips on panels | Add tooltip on hover | Medium | 1 hour
-| Panels organization icon still not clear | Change icon to list icon | Medium | 20 minutes
-| Tooltip on label, `Double Click to Rename` | Add | Medium | 10 minutes
+| ~~Panels organization icon still not clear~~ | Change icon to list icon | Medium | 20 minutes
+| ~~Tooltip on panel organization label, `Double Click to Rename`~~ | Add | Medium | 10 minutes
 | Keyboard bindings (D - delete panel, arrow keys nudge panel) | Add | Low | 6-8 hours
-| Switching to select mode after drawing a panel is annoying | Switch interface to stay in draw mode | Medium | 30 minutes
+| ~~Switching to select mode after drawing a panel is annoying~~ | Switch interface to stay in draw mode | Medium | 30 minutes
 | Rearrange icons by switching `Select` and `Draw` | Keep to stay consistent with other interfaces | N/A | N/A
-| Can click on `View Comic` even with no pages | Disable button unless there are pages | High | 30 minutes
-| When renaming panel, unless you hit enter it stays open and does not save | Save on blur | High | 30 minutes
-| Possibly didn't realize you could upload multiple because of upload copy | Change copy to read `File(s)` | Medium | 5 minutes
-| Cursor is I bar when hovering over icon on Windows | Change to cursor icon | Really Low | 5 minutes
+| ~~Can click on `View Comic` even with no pages~~ | Disable button unless there are pages | High | 30 minutes
+| ~~When renaming panel, unless you hit enter it stays open and does not save~~ | Save on blur | High | 30 minutes
+| ~~Possibly didn't realize you could upload multiple because of upload copy~~ | Change copy to read `File(s)` | Medium | 5 minutes
+| ~~Cursor is I bar when hovering over icon on Windows~~ | Change to cursor icon | Really Low | 5 minutes
 | If you click to draw panel, but do not drag, panel is invisible | Fix to either delete or size up if they don't drag | Medium | 30 minutes
 
 ### Round Two/Version One Feedback

@@ -2974,6 +2974,10 @@ p {
   line-height: 2;
 }
 
+.button[disabled] {
+  background-color: #dbdbdb;
+}
+
 .viewport {
   position: relative;
   display: -webkit-box;
@@ -3262,10 +3266,15 @@ p {
   border-radius: 0;
   -webkit-box-shadow: none;
           box-shadow: none;
+  cursor: pointer;
 }
 
 .controls__button--active {
   background-color: #dbdbdb;
+}
+
+.controls__button .fa {
+  cursor: inherit;
 }
 
 .controls__menu {

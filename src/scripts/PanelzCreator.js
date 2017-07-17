@@ -291,8 +291,12 @@ class PanelzCreator extends EventClass {
         this.book = new Book(this,data);
         this.upload = new Upload(this);
         this.workspace = new Workspace(this,this.book,this.upload);
-        this.upload.on('pageUploaded',this.onPageUploaded.bind(this));
 
+        this.upload.on('pageUploaded',this.onPageUploaded.bind(this));
+        this.book.on('pageAdded',this.updateViewButton.bind(this));
+        this.book.on('pageDeleted',this.updateViewButton.bind(this));
+
+        this.updateViewButton();
         $('[data-view-link]').attr('href',this.getEndpoint('view'));
     }
 
@@ -331,9 +335,11 @@ class PanelzCreator extends EventClass {
      * Sets event listeners for the page.
      */
     setEventListeners() {
+        console.log('Set event listeners');
         $('body').on('click','.button--submit',this.onSubmitButtonClick.bind(this));
         $('body').on('complete','.button--submit',this.onSubmitButtonComplete.bind(this));
         $('body').on('click','.button--save',this.saveComic.bind(this));
+        $('body').on('click','[data-view-link]',this.onViewButtonClick.bind(this));
     }
 
     /**
@@ -444,6 +450,24 @@ class PanelzCreator extends EventClass {
         $this.css('width','auto');
         $this.find('.button__icon').hide();
         $this.find('.button__text').show();
+    }
+
+    /**
+     * Enables or disables the view comic button based on the comic
+     * book page length. If there are no pages, don't let them view.
+     */
+    updateViewButton() {
+        $('[data-view-link]').attr('disabled',!this.book.pages.length);
+    }
+
+    /**
+     * When the view link is clicked, if it's disabled, don't go anywhere.
+     * @param {Object} e Event object
+     */
+    onViewButtonClick(e) {
+        if( $(e.currentTarget).attr('disabled') ) {
+            e.preventDefault();
+        }
     }
 
     /**

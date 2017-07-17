@@ -20,7 +20,7 @@ const PANELZ_CREATOR_MARKUP = `
                 <span class="button__icon"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></span>
                 <span class="button__text">Save Comic</span>
             </button>
-            <a href="#" class="button button--alt viewport__title-bar-button" data-view-link>View Comic</a>
+            <a href="#" class="button button--alt viewport__title-bar-button" data-view-link disabled>View Comic</a>
         </form>
         <div class="viewport__content viewport__content--hidden">
             <div class="viewport__workspace-navigation workspace-navigation">
@@ -47,7 +47,7 @@ const PANELZ_CREATOR_MARKUP = `
                         </li>
                         <li class="controls__option controls__option--panels">
                             <button class="controls__button" data-mode="SELECT_MODE" data-menu="panels" disabled title="Organize Panels">
-                                <i class="fa fa-picture-o"></i>
+                                <i class="fa fa-list"></i>
                             </button>
                             <ul class="controls__menu controls__menu--panels">
                                 <li class="controls__menu-item">Panel A</li>
@@ -82,7 +82,7 @@ const PANELZ_CREATOR_MARKUP = `
                             <i class="fa fa-cloud-upload upload__dropzone-icon"></i>
                             <span>Drag and Drop to Upload</span>
                             <span style="font-size: 14px;">or</span>
-                            <button class="button button--upload">Select File From Your Computer</button>
+                            <button class="button button--upload">Select File(s) From Your Computer</button>
                         </div>
                     </div>
                 </div>

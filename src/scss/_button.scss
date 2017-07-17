@@ -20,4 +20,7 @@
         background-color: #52965e;
         line-height: 2;
     }
+    &[disabled] {
+        background-color: #dbdbdb;
+    }
 }

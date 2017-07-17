@@ -24,8 +24,12 @@
         border-bottom: none;
         border-radius: 0;
         box-shadow: none;
+        cursor: pointer;
         &--active {
             background-color: #dbdbdb;
+        }
+        .fa {
+            cursor: inherit;
         }
     }
     &__menu {
