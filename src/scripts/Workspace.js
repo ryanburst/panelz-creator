@@ -125,6 +125,7 @@ class Workspace extends EventClass {
         $body.on('mousedown','.controls__menu-item',this.onPanelSelect.bind(this));
         $body.on('click activate','.workspace-navigation__delete-page',this.onDeletePage.bind(this));
         $body.on('click activate','.upload__cancel',this.hideUploadScreen.bind(this));
+        $body.on('keyup',this.onKeyUp.bind(this));
         $(window).on('resize',this.onResize.bind(this)).trigger('resize');
         this.app.on('renderCanvas',this.render.bind(this));
         this.book.on('panelSet',this.onPanelSet.bind(this));
@@ -311,6 +312,29 @@ class Workspace extends EventClass {
     }
 
     /**
+     * Key bindings for actions
+     * @param {Object} e EventObject
+     */
+    onKeyUp(e) {
+        // Delete - Delete panel
+        if( e.which === 8 && this.mode === SELECT_MODE) {
+            this.deleteObject();
+        // C - Duplicate panel
+        } else if( e.which === 67  && this.mode === SELECT_MODE ) {
+            this.duplicateObject();
+        // S - Select mode
+        } else if( e.which === 83 ) {
+            $('.controls__option--select .controls__button').trigger('activate');
+        // D - Draw mode
+        } else if( e.which === 68 ) {
+            $('.controls__option--draw .controls__button').trigger('activate');
+        // P - Panels menu
+        } else if( e.which === 80 && ! $('.controls__option--panels .controls__button[disabled]').length ) {
+            $('.controls__option--panels .controls__button').trigger('activate');
+        }
+    }
+
+    /**
      * A page has been selected by the user. Center the image in
      * the workspace canvas and trigger an edit
      *
@@ -425,11 +449,18 @@ class Workspace extends EventClass {
      * mode and they were drawing a rectangle, consider this a complete
      * panel draw and add it to the current page.
      *
+     * If the object does not have any size (mouseup without drag), then
+     * do not add the object as a panel and delete it from the canvas.
+     *
      * @param {Object} e Mouse event object
      */
     mouseup(e) {
         if( this.mode === DRAW_MODE && this.drawStarted) {
-            this.book.currentPage.trigger('panelObjectAdded',this.drawStarted);
+            if( ! this.drawStarted.width || ! this.drawStarted.height ) {
+                this.canvas.remove(this.drawStarted);
+            } else {
+                this.book.currentPage.trigger('panelObjectAdded',this.drawStarted);
+            }
             this.canvas.deactivateAllWithDispatch().renderAll();
             this.drawStarted = false;
             this.drawX = 0;

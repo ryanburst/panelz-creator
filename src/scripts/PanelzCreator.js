@@ -335,7 +335,6 @@ class PanelzCreator extends EventClass {
      * Sets event listeners for the page.
      */
     setEventListeners() {
-        console.log('Set event listeners');
         $('body').on('click','.button--submit',this.onSubmitButtonClick.bind(this));
         $('body').on('complete','.button--submit',this.onSubmitButtonComplete.bind(this));
         $('body').on('click','.button--save',this.saveComic.bind(this));
